@@ -65,7 +65,11 @@ class ArticleController extends Controller
      */
     public function edit($id)
     {
-        return view("components/form", ["article" => Article::findOrFail($id)]);
+        $article = Article::findOrFail($id);
+        if (!ArticleController::isCurrentUserArticleOwner($article)) {
+            return redirect()->route("home");
+        }
+        return view("components/form", ["article" => $article]);
     }
 
     /**
@@ -78,6 +82,9 @@ class ArticleController extends Controller
     public function update(Request $request, $id)
     {
         $article = Article::findOrFail($id);
+        if (!ArticleController::isCurrentUserArticleOwner($article)) {
+            return redirect()->route("home");
+        }
         $article->update($request->validate(Article::$update_validation_rules));
         return redirect()->route("articles.show", ["article" => $article->id]);
     }
@@ -90,6 +97,15 @@ class ArticleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $article = Article::findOrFail($id);
+        if (!ArticleController::isCurrentUserArticleOwner($article)) {
+            return redirect()->route("home");
+        }
+        $article->delete();
+        return redirect()->route("profile");
+    }
+
+    private function isCurrentUserArticleOwner(Article $article) {
+        return Auth::id() == $article->user_id;
     }
 }

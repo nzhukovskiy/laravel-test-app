@@ -16,10 +16,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [ArticleController::class, 'index'])->name("home");
-Route::get('/login', [UserController::class, 'show_login'])->name('login');
-Route::get('/register', [UserController::class, 'show_register'])->name('register');
-Route::post('/login', [UserController::class, 'make_login']);
-Route::post('/register', [UserController::class, 'make_register']);
+Route::get('/login', [UserController::class, 'showLogin'])->name('login');
+Route::get('/register', [UserController::class, 'showRegister'])->name('register');
+Route::post('/login', [UserController::class, 'makeLogin']);
+Route::post('/register', [UserController::class, 'makeRegister']);
 Route::post('/logout', [UserController::class, 'logout'])->name("logout");
-Route::get('/profile', [UserController::class, 'show_profile'])->name('profile');
+Route::get('/profile', [UserController::class, 'showProfile'])->name('profile')->middleware('auth');
 Route::resource('articles', ArticleController::class);

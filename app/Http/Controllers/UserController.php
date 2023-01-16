@@ -9,10 +9,10 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    public function show_login() {
+    public function showLogin() {
         return view('authorization/login');
     }
-    public function make_login(Request $request) {
+    public function makeLogin(Request $request) {
         $credentials = $request->validate([
             'name' => ['required'],
             'password' => ['required'],
@@ -24,13 +24,13 @@ class UserController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Введены некорректные данные',
-        ])->onlyInput('email');
+            'name' => 'Введены некорректные данные',
+        ])->onlyInput('name');
     }
-    public function show_register() {
+    public function showRegister() {
         return view("authorization/register", ['user' => new User()]);
     }
-    public function make_register(Request $request) {
+    public function makeRegister(Request $request) {
         $user = new User($request->validate(User::$validation_rules));
         $user->password = Hash::make($request->password);
         $user->save();
@@ -40,7 +40,7 @@ class UserController extends Controller
         Auth::logout();
         return redirect()->route("login");
     }
-    public function show_profile() {
+    public function showProfile() {
         return view("user/profile", ["user" => Auth::user()]);
     }
 }
