@@ -1,6 +1,6 @@
 @extends('components/layout')
 @section('content')
-    <h1>{{$article->title}}</h1>
+    <h1 class="red">{{$article->title}}</h1>
     <div>
         Автор статьи: {{$article->user->name}}
     </div>

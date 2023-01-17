@@ -23,9 +23,7 @@ class UserController extends Controller
             return redirect()->route("home");
         }
 
-        return back()->withErrors([
-            'name' => 'Введены некорректные данные',
-        ])->onlyInput('name');
+        return back()->withErrors([__('custom.login_error')])->onlyInput('name');
     }
     public function showRegister() {
         return view("authorization/register", ['user' => new User()]);
