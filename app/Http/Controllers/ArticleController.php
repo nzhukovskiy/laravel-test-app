@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Article;
+use App\Models\Image;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleController extends Controller
 {
@@ -42,7 +44,14 @@ class ArticleController extends Controller
     {
         $article = new Article($request->validate(Article::$validation_rules));
         $article->user_id = Auth::id();
+        
         $article->save();
+        foreach ($request->images as $image) {
+            $newImage = new Image();
+            $newImage->article_id = $article->id;
+            $newImage->path = Storage::disk('public')->put("images", $image);
+            $newImage->save();
+        }
         return redirect()->route("home");
     }
 
@@ -66,7 +75,7 @@ class ArticleController extends Controller
     public function edit($id)
     {
         $article = Article::findOrFail($id);
-        if (!ArticleController::isCurrentUserArticleOwner($article)) {
+        if (!$this->isCurrentUserArticleOwner($article)) {
             return redirect()->route("home");
         }
         return view("components/form", ["article" => $article]);
@@ -82,7 +91,7 @@ class ArticleController extends Controller
     public function update(Request $request, $id)
     {
         $article = Article::findOrFail($id);
-        if (!ArticleController::isCurrentUserArticleOwner($article)) {
+        if (!$this->isCurrentUserArticleOwner($article)) {
             return redirect()->route("home");
         }
         $article->update($request->validate(Article::$update_validation_rules));
@@ -98,7 +107,7 @@ class ArticleController extends Controller
     public function destroy($id)
     {
         $article = Article::findOrFail($id);
-        if (!ArticleController::isCurrentUserArticleOwner($article)) {
+        if (!$this->isCurrentUserArticleOwner($article)) {
             return redirect()->route("home");
         }
         $article->delete();

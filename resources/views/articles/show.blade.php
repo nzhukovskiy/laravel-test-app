@@ -8,4 +8,7 @@
     <div>
         {{$article->description}}
     </div>
+    @foreach ($article->images as $image)
+        <img src={{Storage::url($image->path)}} alt="Image">
+    @endforeach
 @endsection
